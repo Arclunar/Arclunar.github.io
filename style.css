@@ -277,8 +277,6 @@ body {
     letter-spacing: 3px;
     color: var(--text-muted);
     margin-bottom: 4rem;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 1.5rem;
     transition: text-shadow 0.6s ease, color 0.6s ease;
 }
 
@@ -342,8 +340,6 @@ body {
 /* 项目与教育排版 */
 .education-item {
     margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #1a1a1a;
 }
 .edu-degree {
     font-size: 1.5rem;
@@ -424,7 +420,6 @@ body {
     padding: 1.5rem 0;
     font-size: 1.05rem;
     color: var(--text-muted);
-    border-bottom: 1px solid #1a1a1a;
     line-height: 1.6;
 }
 .pub-list li strong {
@@ -490,7 +485,6 @@ body {
     font-size: 1.2rem;
     letter-spacing: 1px;
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     transition: color 0.3s ease, padding-left 0.3s ease;
 }
 
