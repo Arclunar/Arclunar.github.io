@@ -99,6 +99,9 @@
     </style>
 </head>
 <body>
+    <!-- 背景图层 -->
+    <div class="bg-layer active" id="post-bg"></div>
+
     <!-- 顶部导航 -->
     <nav class="navbar">
         <a href="index.html" class="logo" style="text-decoration:none;color:inherit;">Haowen Zheng.</a>
@@ -167,6 +170,21 @@
 
         // Footer
         document.getElementById('post-footer').innerHTML = `&copy; ${new Date().getFullYear()} Haowen Zheng. All rights reserved.`;
+
+        // 随机分配一张背景图
+        (function() {
+            const images = [
+                'images/landscape/landscape_1.jpg',
+                'images/landscape/landscape_2.jpg',
+                'images/landscape/landscape_3.jpg',
+                'images/landscape/landscape_4.jpg',
+                'images/landscape/landscape_5.jpg',
+                'images/landscape/landscape_6.jpg',
+            ];
+            const idx = Math.floor(Math.random() * images.length);
+            const bg = document.getElementById('post-bg');
+            if (bg) bg.style.backgroundImage = `url('${images[idx]}')`;
+        })();
     </script>
 </body>
 </html>
