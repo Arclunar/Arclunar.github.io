@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
+
+    // 3. 滚动切换背景图
+    initScrollBackground();
 });
 
 // 绑定鼠标光标交互事件（需要在每次 DOM 重渲染后调用）
@@ -243,4 +246,71 @@ function loadBlogPosts() {
             </a>
         `;
     });
+}
+
+// 滚动切换背景图
+function initScrollBackground() {
+    const landscapeImages = [
+        'images/landscape/landscape_1.jpg',
+        'images/landscape/landscape_2.jpg',
+        'images/landscape/landscape_3.jpg',
+        'images/landscape/landscape_4.jpg',
+        'images/landscape/landscape_5.jpg',
+        'images/landscape/landscape_6.jpg',
+    ];
+
+    // 预加载所有图片
+    landscapeImages.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
+    const sections = document.querySelectorAll('#hero, .section');
+    const layerA = document.getElementById('bg-layer-a');
+    const layerB = document.getElementById('bg-layer-b');
+    if (!layerA || !layerB) return;
+
+    let activeLayer = 'a'; // 当前显示的图层
+    let currentImageIndex = -1;
+
+    // 初始化第一张背景
+    layerA.style.backgroundImage = `url('${landscapeImages[0]}')`;
+    layerA.classList.add('active');
+    currentImageIndex = 0;
+
+    const bgObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+
+            // 找到当前进入视口的 section 索引
+            const idx = Array.from(sections).indexOf(entry.target);
+            if (idx === -1) return;
+
+            // 将 section 索引映射到图片索引（循环使用）
+            const imgIdx = idx % landscapeImages.length;
+            if (imgIdx === currentImageIndex) return;
+
+            currentImageIndex = imgIdx;
+            const newUrl = `url('${landscapeImages[imgIdx]}')`;
+
+            // 交替使用两个图层做交叉淡入淡出
+            if (activeLayer === 'a') {
+                layerB.style.backgroundImage = newUrl;
+                layerB.classList.add('active');
+                layerA.classList.remove('active');
+                activeLayer = 'b';
+            } else {
+                layerA.style.backgroundImage = newUrl;
+                layerA.classList.add('active');
+                layerB.classList.remove('active');
+                activeLayer = 'a';
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.35
+    });
+
+    sections.forEach(sec => bgObserver.observe(sec));
 }
