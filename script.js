@@ -1,8 +1,23 @@
+// 当前语言状态
+let currentLang = 'zh';
+
 // 等待页面加载完成
 document.addEventListener('DOMContentLoaded', () => {
 
     // 0. 动态渲染数据
-    renderData();
+    renderData(currentLang);
+
+    // 语言切换按钮
+    const langToggle = document.getElementById('lang-toggle');
+    if (langToggle) {
+        langToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            langToggle.textContent = currentLang === 'zh' ? 'EN' : '中';
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
+            renderData(currentLang);
+            bindCursorEvents(); // 重新绑定光标事件
+        });
+    }
 
     // 1. 滚动淡入动画 (Intersection Observer)
     const observerOptions = {
@@ -39,24 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
-
-        // 重新获取由于 DOM 动态渲染生成的可交互元素
-        const bindCursorEvents = () => {
-            const interactiveElements = document.querySelectorAll('a, .gallery-item');
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
-                    cursor.style.backgroundColor = 'rgba(255, 255, 255, 1)';
-                    cursor.style.border = 'none';
-                });
-                
-                el.addEventListener('mouseleave', () => {
-                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                    cursor.style.backgroundColor = 'transparent';
-                    cursor.style.border = '1px solid rgba(255, 255, 255, 0.5)';
-                });
-            });
-        };
         bindCursorEvents();
     }
 
@@ -71,25 +68,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// 绑定鼠标光标交互事件（需要在每次 DOM 重渲染后调用）
+function bindCursorEvents() {
+    const cursor = document.querySelector('.cursor');
+    if (!cursor) return;
+    const interactiveElements = document.querySelectorAll('a, .gallery-item, .lang-toggle');
+    interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+            cursor.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+            cursor.style.border = 'none';
+        });
+        el.addEventListener('mouseleave', () => {
+            cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            cursor.style.backgroundColor = 'transparent';
+            cursor.style.border = '1px solid rgba(255, 255, 255, 0.5)';
+        });
+    });
+}
+
 // 数据渲染函数
-function renderData() {
+function renderData(lang) {
     if (typeof siteData === 'undefined') return;
+    const d = siteData[lang];
+    if (!d) return;
 
     // 渲染首屏
     const heroContainer = document.getElementById('hero-container');
     if (heroContainer) {
         heroContainer.innerHTML = `
-            <h1 class="title">${siteData.hero.title}</h1>
-            <p class="subtitle">你好，我是 <span>${siteData.hero.name}</span></p>
-            <p class="description">${siteData.hero.description}</p>
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <h1 class="title">${d.hero.title}</h1>
+                    <p class="subtitle">${d.hero.greeting} <span>${d.hero.name}</span></p>
+                    <p class="nickname">aka <span>${d.hero.nickname}</span></p>
+                    <p class="description">${d.hero.description}</p>
+                </div>
+                <div class="hero-avatar">
+                    <img src="${d.hero.avatar}" alt="${d.hero.name}">
+                </div>
+            </div>
         `;
     }
+
+    // 渲染区块标题
+    document.querySelectorAll('[data-section]').forEach(el => {
+        const key = el.getAttribute('data-section');
+        if (d.sectionTitles[key]) {
+            el.textContent = d.sectionTitles[key];
+        }
+    });
 
     // 渲染教育背景
     const eduContainer = document.getElementById('education-container');
     if (eduContainer) {
-        let eduHTML = `<p>${siteData.education.university}</p>`;
-        siteData.education.items.forEach(item => {
+        let eduHTML = `<p>${d.education.university}</p>`;
+        d.education.items.forEach(item => {
             eduHTML += `
                 <div class="education-item">
                     <span class="edu-degree">${item.degree}</span>
@@ -104,7 +138,8 @@ function renderData() {
     // 渲染专业技能
     const skillsContainer = document.getElementById('skills-container');
     if (skillsContainer) {
-        siteData.skills.forEach(skill => {
+        skillsContainer.innerHTML = '';
+        d.skills.forEach(skill => {
             skillsContainer.innerHTML += `
                 <div class="skill-item">
                     <div class="skill-title">${skill.title}</div>
@@ -117,7 +152,8 @@ function renderData() {
     // 渲染核心经历 - 实习
     const expContainer = document.getElementById('experience-container');
     if (expContainer) {
-        siteData.experience.forEach(exp => {
+        expContainer.innerHTML = '';
+        d.experience.forEach(exp => {
             expContainer.innerHTML += `
                 <div class="work-item">
                     <h3 class="work-title">${exp.title}</h3>
@@ -131,7 +167,8 @@ function renderData() {
     // 渲染核心经历 - 项目
     const projContainer = document.getElementById('projects-container');
     if (projContainer) {
-        siteData.projects.forEach(proj => {
+        projContainer.innerHTML = '';
+        d.projects.forEach(proj => {
             projContainer.innerHTML += `
                 <div class="gallery-item">
                     <div class="image-placeholder">
@@ -146,7 +183,8 @@ function renderData() {
     // 渲染论文与专利
     const pubContainer = document.getElementById('publications-container');
     if (pubContainer) {
-        siteData.publications.forEach(pub => {
+        pubContainer.innerHTML = '';
+        d.publications.forEach(pub => {
             pubContainer.innerHTML += `
                 <li><span class="pub-tag">${pub.tag}</span> ${pub.content}</li>
             `;
@@ -157,15 +195,15 @@ function renderData() {
     const contactContainer = document.getElementById('contact-container');
     if (contactContainer) {
         contactContainer.innerHTML = `
-            <a href="mailto:${siteData.contact.email}" class="link">发送邮件 ↗</a>
-            <a href="${siteData.contact.resume}" class="link" target="_blank">简历下载 (PDF) ↗</a>
-            <a href="tel:${siteData.contact.phoneLink}" class="link">${siteData.contact.phone} ↗</a>
+            <a href="mailto:${d.contact.email}" class="link">${d.contact.emailText}</a>
+            <a href="${d.contact.resume}" class="link" target="_blank">${d.contact.resumeText}</a>
+            <a href="tel:${d.contact.phoneLink}" class="link">${d.contact.phone} ↗</a>
         `;
     }
 
     // 渲染底部版权
     const footerContainer = document.getElementById('footer-container');
     if (footerContainer) {
-        footerContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} ${siteData.hero.name}. All rights reserved.</p>`;
+        footerContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} ${d.hero.name}. All rights reserved.</p>`;
     }
 }

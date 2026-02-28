@@ -19,7 +19,12 @@ body {
     font-family: var(--font-sans);
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: default; /* 自定义光标时可以按需将其隐藏为 none */
+    cursor: default;
+    background-image: linear-gradient(rgba(8, 8, 8, 0.88), rgba(8, 8, 8, 0.92)), url('images/background/landscape.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
 ::selection {
@@ -67,6 +72,25 @@ body {
     color: var(--text-muted);
 }
 
+/* 语言切换按钮 */
+.lang-toggle {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.8rem;
+    font-family: var(--font-sans);
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    border-radius: 2px;
+}
+.lang-toggle:hover {
+    background: var(--text-main);
+    color: var(--bg-color);
+}
+
 /* 布局区块 */
 .content {
     max-width: 1100px;
@@ -79,6 +103,63 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+/* 首屏布局 */
+.hero-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero-avatar {
+    flex-shrink: 0;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 55% 90%;
+    filter: contrast(1.05);
+}
+
+.nickname {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+}
+
+.nickname span {
+    color: var(--text-main);
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+}
+
+@media (max-width: 768px) {
+    .hero-inner {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 2rem;
+    }
+    .hero-avatar {
+        width: 180px;
+        height: 180px;
+    }
 }
 
 .section {
@@ -285,14 +366,46 @@ body {
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    filter: grayscale(80%) contrast(1.1);
 }
 .gallery-item:hover .image-placeholder img {
     transform: scale(1.05);
-    filter: grayscale(0%) contrast(1);
 }
 
 .project-name {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.project-name strong {
+    color: var(--text-main);
+    font-size: 1.05rem;
+}
+
+/* 联系方式 */
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.contact-links .link {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.contact-links .link:hover {
+    color: var(--text-muted);
+    padding-left: 0.5rem;
+}
+
 footer {
     text-align: center;
     padding: 4rem;

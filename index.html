@@ -18,12 +18,13 @@
     <nav class="navbar">
         <div class="logo">Haowen Zheng.</div>
         <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#works">Works</a></li>
-            <li><a href="#publications">Publications</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#about" data-nav="about">About</a></li>
+            <li><a href="#skills" data-nav="skills">Skills</a></li>
+            <li><a href="#works" data-nav="works">Works</a></li>
+            <li><a href="#publications" data-nav="publications">Publications</a></li>
+            <li><a href="#contact" data-nav="contact">Contact</a></li>
         </ul>
+        <button id="lang-toggle" class="lang-toggle" aria-label="Switch Language">EN</button>
     </nav>
 
     <main>
@@ -37,7 +38,7 @@
         <!-- 关于我 & 教育经历 -->
         <section id="about" class="section">
             <div class="content fade-up">
-                <h2 class="section-title">01 / 教育背景</h2>
+                <h2 class="section-title" data-section="about">01 / 教育背景</h2>
                 <div id="education-container" class="text-block">
                     <!-- 由 JavaScript 动态渲染数据 -->
                 </div>
@@ -47,7 +48,7 @@
         <!-- 专业技能 -->
         <section id="skills" class="section">
             <div class="content fade-up">
-                <h2 class="section-title">02 / 专业技能</h2>
+                <h2 class="section-title" data-section="skills">02 / 专业技能</h2>
                 <div id="skills-container" class="skills-grid">
                     <!-- 由 JavaScript 动态渲染数据 -->
                 </div>
@@ -57,7 +58,7 @@
         <!-- 项目与实习 -->
         <section id="works" class="section">
             <div class="content fade-up">
-                <h2 class="section-title">03 / 核心经历</h2>
+                <h2 class="section-title" data-section="works">03 / 核心经历</h2>
                 
                 <div id="experience-container">
                     <!-- 由 JavaScript 动态渲染数据 -->
@@ -72,7 +73,7 @@
         <!-- 论文与专利 -->
         <section id="publications" class="section">
             <div class="content fade-up">
-                <h2 class="section-title">04 / 论文与专利</h2>
+                <h2 class="section-title" data-section="publications">04 / 论文与专利</h2>
                 <ul id="publications-container" class="pub-list">
                     <!-- 由 JavaScript 动态渲染数据 -->
                 </ul>
@@ -82,7 +83,7 @@
         <!-- 联系信息 -->
         <section id="contact" class="section">
             <div class="content fade-up">
-                <h2 class="section-title">05 / 联系我</h2>
+                <h2 class="section-title" data-section="contact">05 / 联系我</h2>
                 <div id="contact-container" class="contact-links">
                     <!-- 由 JavaScript 动态渲染数据 -->
                 </div>
