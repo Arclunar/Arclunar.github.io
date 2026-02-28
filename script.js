@@ -1,5 +1,5 @@
 // 当前语言状态
-let currentLang = 'zh';
+let currentLang = 'en';
 
 // 等待页面加载完成
 document.addEventListener('DOMContentLoaded', () => {
