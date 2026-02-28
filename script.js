@@ -206,4 +206,41 @@ function renderData(lang) {
     if (footerContainer) {
         footerContainer.innerHTML = `<p>&copy; ${new Date().getFullYear()} ${d.hero.name}. All rights reserved.</p>`;
     }
+
+    // 加载博客列表
+    loadBlogPosts();
+}
+
+// 博客列表加载函数
+function loadBlogPosts() {
+    const blogContainer = document.getElementById('blog-container');
+    if (!blogContainer) return;
+
+    const posts = (typeof blogPosts !== 'undefined') ? blogPosts : [];
+
+    if (!posts || posts.length === 0) {
+        blogContainer.innerHTML = '<p class="text-muted">暂无文章</p>';
+        return;
+    }
+    blogContainer.innerHTML = '';
+    posts.forEach(post => {
+        const tags = Array.isArray(post.tags)
+            ? post.tags.map(t => `<span class="blog-tag">${t}</span>`).join('')
+            : '';
+        const updated = post.updated && post.updated !== post.created
+            ? `<span class="blog-updated">Updated: ${post.updated}</span>`
+            : '';
+        blogContainer.innerHTML += `
+            <a href="post.html?file=${encodeURIComponent(post.file)}" class="blog-card">
+                <div class="blog-card-header">
+                    <h3 class="blog-card-title">${post.title}</h3>
+                    <div class="blog-card-meta">
+                        <span class="blog-date">${post.created}</span>
+                        ${updated}
+                    </div>
+                </div>
+                <div class="blog-card-tags">${tags}</div>
+            </a>
+        `;
+    });
 }

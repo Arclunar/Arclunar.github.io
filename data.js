@@ -24,7 +24,8 @@ const siteData = {
             skills: "02 / 专业技能",
             works: "03 / 核心经历",
             publications: "04 / 论文与专利",
-            contact: "05 / 联系我"
+            blog: "05 / 技术博客",
+            contact: "06 / 联系我"
         },
         // 教育背景
         education: {
@@ -138,7 +139,8 @@ const siteData = {
             skills: "02 / Skills",
             works: "03 / Experience",
             publications: "04 / Publications",
-            contact: "05 / Contact"
+            blog: "05 / Blog",
+            contact: "06 / Contact"
         },
         // 教育背景
         education: {

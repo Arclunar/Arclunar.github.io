@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arc | 极简与艺术</title>
+    <title>Arc | Control & Robotics</title>
     <link rel="stylesheet" href="style.css">
     <!-- 引入优雅的中英文字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +22,7 @@
             <li><a href="#skills" data-nav="skills">Skills</a></li>
             <li><a href="#works" data-nav="works">Works</a></li>
             <li><a href="#publications" data-nav="publications">Publications</a></li>
+            <li><a href="#blog" data-nav="blog">Blog</a></li>
             <li><a href="#contact" data-nav="contact">Contact</a></li>
         </ul>
         <button id="lang-toggle" class="lang-toggle" aria-label="Switch Language">中</button>
@@ -80,10 +81,20 @@
             </div>
         </section>
 
+        <!-- 技术博客 -->
+        <section id="blog" class="section">
+            <div class="content fade-up">
+                <h2 class="section-title" data-section="blog">05 / Blog</h2>
+                <div id="blog-container" class="blog-list">
+                    <!-- 由 JavaScript 从 blog/index.json 动态加载 -->
+                </div>
+            </div>
+        </section>
+
         <!-- 联系信息 -->
         <section id="contact" class="section">
             <div class="content fade-up">
-                <h2 class="section-title" data-section="contact">05 / 联系我</h2>
+                <h2 class="section-title" data-section="contact">06 / Contact</h2>
                 <div id="contact-container" class="contact-links">
                     <!-- 由 JavaScript 动态渲染数据 -->
                 </div>
@@ -98,6 +109,7 @@
 
     <!-- 分文件引入数据及脚本 -->
     <script src="data.js"></script>
+    <script src="blog_data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

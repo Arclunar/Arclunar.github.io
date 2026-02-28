@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Arc</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+        }
+        .post-header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding-bottom: 2rem;
+        }
+        .post-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        .post-meta {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .post-body {
+            font-size: 1.05rem;
+            line-height: 2;
+            color: var(--text-main);
+        }
+        .post-body h1, .post-body h2, .post-body h3 {
+            font-family: var(--font-serif);
+            margin: 2.5rem 0 1rem;
+            font-weight: 400;
+        }
+        .post-body h1 { font-size: 1.8rem; }
+        .post-body h2 { font-size: 1.4rem; }
+        .post-body h3 { font-size: 1.15rem; }
+        .post-body p {
+            margin-bottom: 1.2rem;
+        }
+        .post-body code {
+            background: rgba(255,255,255,0.06);
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .post-body pre {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .post-body pre code {
+            background: none;
+            padding: 0;
+        }
+        .post-body ul, .post-body ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        .post-body li {
+            margin-bottom: 0.5rem;
+        }
+        .post-body blockquote {
+            border-left: 3px solid rgba(255,255,255,0.15);
+            margin: 1.5rem 0;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-muted);
+        }
+        .post-body img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <a href="index.html" class="logo" style="text-decoration:none;color:inherit;">Haowen Zheng.</a>
+    </nav>
+
+    <div class="post-container">
+        <a href="index.html#blog" class="back-link">← Back</a>
+        <article>
+            <div class="post-header">
+                <h1 class="post-title" id="post-title">Loading...</h1>
+                <div class="post-meta" id="post-meta"></div>
+            </div>
+            <div class="post-body" id="post-body"></div>
+        </article>
+    </div>
+
+    <footer style="text-align:center;padding:4rem;color:#444;font-size:0.8rem;letter-spacing:2px;">
+        <p id="post-footer"></p>
+    </footer>
+
+    <!-- marked.js 放在这里确保加载顺序 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="blog_data.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+
+        if (file && typeof blogPosts !== 'undefined') {
+            const post = blogPosts.find(p => p.file === file);
+            if (post) {
+                // 渲染标题
+                document.getElementById('post-title').textContent = post.title;
+                document.title = `${post.title} | Arc`;
+
+                // 渲染元信息
+                let metaHTML = '';
+                if (post.created) metaHTML += `<span>Created: ${post.created}</span>`;
+                if (post.updated && post.updated !== post.created) metaHTML += `<span>Updated: ${post.updated}</span>`;
+                if (Array.isArray(post.tags)) {
+                    metaHTML += post.tags.map(t => `<span style="background:rgba(255,255,255,0.06);padding:0.2em 0.6em;border-radius:3px;">${t}</span>`).join('');
+                }
+                document.getElementById('post-meta').innerHTML = metaHTML;
+
+                // 渲染正文
+                if (post.type === 'typst' && post.svgPages) {
+                    // Typst: 渲染 SVG 页面
+                    const bodyEl = document.getElementById('post-body');
+                    bodyEl.innerHTML = post.svgPages.map(svg =>
+                        `<div class="typst-page">${svg}</div>`
+                    ).join('');
+                    // 让 SVG 自适应宽度
+                    bodyEl.querySelectorAll('svg').forEach(svg => {
+                        svg.style.width = '100%';
+                        svg.style.height = 'auto';
+                    });
+                } else {
+                    // Markdown: 用 marked 渲染
+                    document.getElementById('post-body').innerHTML = marked.parse(post.body || '');
+                }
+            } else {
+                document.getElementById('post-title').textContent = '文章未找到';
+            }
+        } else if (!file) {
+            document.getElementById('post-title').textContent = '未指定文章';
+        }
+
+        // Footer
+        document.getElementById('post-footer').innerHTML = `&copy; ${new Date().getFullYear()} Haowen Zheng. All rights reserved.`;
+    </script>
+</body>
+</html>
