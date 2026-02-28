@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. 动态渲染数据
     renderData(currentLang);
 
+    // 0.5 初始化炫酷特效（事件委托，只绑定一次，无需在 renderData 后重绑）
+    initScrollProgress();
+    initGridCanvas();
+    initSectionTitleGlow();
+    initTilt3D();
+
     // 语言切换按钮
     const langToggle = document.getElementById('lang-toggle');
     if (langToggle) {
@@ -15,37 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
             langToggle.textContent = currentLang === 'zh' ? 'EN' : '中';
             document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : 'en';
             renderData(currentLang);
-            bindCursorEvents(); // 重新绑定光标事件
         });
     }
 
     // 1. 滚动淡入动画 (Intersection Observer)
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.15 // 元素露出 15% 时触发
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target); // 动画只触发一次
-            }
-        });
-    }, observerOptions);
-
-    const fadeElems = document.querySelectorAll('.fade-up');
-    fadeElems.forEach(elem => {
-        // 首屏元素延迟一点点触发动画，效果更好
-        if(elem.closest('#hero')) {
-            setTimeout(() => {
-                elem.classList.add('visible');
-            }, 100);
-        } else {
-            observer.observe(elem);
-        }
-    });
+    initFadeUpObserver();
 
     // 2. 自定义鼠标光标 (仅在宽屏上显示)
     const cursor = document.querySelector('.cursor');
@@ -71,22 +51,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollBackground();
 });
 
-// 绑定鼠标光标交互事件（需要在每次 DOM 重渲染后调用）
+// 绑定鼠标光标交互事件（事件委托，一次绑定，适配语言切换与动态内容）
+let cursorEventsBound = false;
 function bindCursorEvents() {
+    if (cursorEventsBound) return;
     const cursor = document.querySelector('.cursor');
     if (!cursor) return;
-    const interactiveElements = document.querySelectorAll('a, .gallery-item, .lang-toggle');
-    interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
+    cursorEventsBound = true;
+    document.body.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, .gallery-item, .lang-toggle')) {
             cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
             cursor.style.backgroundColor = 'rgba(255, 255, 255, 1)';
             cursor.style.border = 'none';
-        });
-        el.addEventListener('mouseleave', () => {
+        }
+    });
+    document.body.addEventListener('mouseout', (e) => {
+        const el = e.target.closest('a, .gallery-item, .lang-toggle');
+        if (el && (!e.relatedTarget || !el.contains(e.relatedTarget))) {
             cursor.style.transform = 'translate(-50%, -50%) scale(1)';
             cursor.style.backgroundColor = 'transparent';
             cursor.style.border = '1px solid rgba(255, 255, 255, 0.5)';
-        });
+        }
     });
 }
 
@@ -138,13 +123,14 @@ function renderData(lang) {
         eduContainer.innerHTML = eduHTML;
     }
 
-    // 渲染专业技能
+    // 渲染专业技能（带交错动画）
     const skillsContainer = document.getElementById('skills-container');
     if (skillsContainer) {
         skillsContainer.innerHTML = '';
-        d.skills.forEach(skill => {
+        d.skills.forEach((skill, i) => {
+            const stagger = Math.min(i + 1, 8);
             skillsContainer.innerHTML += `
-                <div class="skill-item">
+                <div class="skill-item fade-up stagger-${stagger}" data-stagger>
                     <div class="skill-title">${skill.title}</div>
                     <div class="skill-desc">${skill.desc}</div>
                 </div>
@@ -167,13 +153,14 @@ function renderData(lang) {
         });
     }
 
-    // 渲染核心经历 - 项目
+    // 渲染核心经历 - 项目（带交错动画）
     const projContainer = document.getElementById('projects-container');
     if (projContainer) {
         projContainer.innerHTML = '';
-        d.projects.forEach(proj => {
+        d.projects.forEach((proj, i) => {
+            const stagger = Math.min(i + 1, 8);
             projContainer.innerHTML += `
-                <div class="gallery-item">
+                <div class="gallery-item fade-up stagger-${stagger}">
                     <div class="image-placeholder">
                         <img src="${proj.image}" alt="${proj.title}" loading="lazy">
                     </div>
@@ -212,6 +199,9 @@ function renderData(lang) {
 
     // 加载博客列表
     loadBlogPosts();
+
+    // 语言切换后：重新观察新创建的 fade-up 元素
+    observeFadeUpElements();
 }
 
 // 博客列表加载函数
@@ -226,7 +216,8 @@ function loadBlogPosts() {
         return;
     }
     blogContainer.innerHTML = '';
-    posts.forEach(post => {
+    posts.forEach((post, i) => {
+        const stagger = Math.min(i + 1, 8);
         const tags = Array.isArray(post.tags)
             ? post.tags.map(t => `<span class="blog-tag">${t}</span>`).join('')
             : '';
@@ -234,7 +225,7 @@ function loadBlogPosts() {
             ? `<span class="blog-updated">Updated: ${post.updated}</span>`
             : '';
         blogContainer.innerHTML += `
-            <a href="post.html?file=${encodeURIComponent(post.file)}" class="blog-card">
+            <a href="post.html?file=${encodeURIComponent(post.file)}" class="blog-card fade-up stagger-${stagger}" data-stagger>
                 <div class="blog-card-header">
                     <h3 class="blog-card-title">${post.title}</h3>
                     <div class="blog-card-meta">
@@ -245,6 +236,38 @@ function loadBlogPosts() {
                 <div class="blog-card-tags">${tags}</div>
             </a>
         `;
+    });
+}
+
+// 滚动淡入动画：Observer 与观察逻辑（语言切换后需重新观察新元素）
+let fadeUpObserver = null;
+
+function initFadeUpObserver() {
+    if (fadeUpObserver) return; // 只创建一次
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15
+    };
+    fadeUpObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.classList.toggle('visible', entry.isIntersecting);
+        });
+    }, observerOptions);
+    observeFadeUpElements();
+}
+
+function observeFadeUpElements() {
+    if (!fadeUpObserver) return;
+    const fadeElems = document.querySelectorAll('.fade-up');
+    fadeElems.forEach(elem => {
+        if (elem.closest('#hero')) {
+            elem.classList.remove('visible'); // 先移除以触发重动画
+            elem.offsetHeight; // 强制 reflow
+            setTimeout(() => elem.classList.add('visible'), 50);
+        } else {
+            fadeUpObserver.observe(elem); // 持续观察，进出视口时切换 visible
+        }
     });
 }
 
@@ -313,4 +336,95 @@ function initScrollBackground() {
     });
 
     sections.forEach(sec => bgObserver.observe(sec));
+}
+
+// ========== 炫酷特效 ==========
+
+// 滚动进度条
+function initScrollProgress() {
+    const progressBar = document.getElementById('scroll-progress');
+    if (!progressBar) return;
+
+    const updateProgress = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+        progressBar.style.transform = `scaleX(${progress / 100})`;
+    };
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+}
+
+// 网格粒子 Canvas 背景
+function initGridCanvas() {
+    const canvas = document.getElementById('grid-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    const gridSize = 60;
+    const dotRadius = 0.8;
+    let time = 0;
+
+    const resize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    };
+
+    const draw = () => {
+        time += 0.02;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let x = 0; x < canvas.width + gridSize; x += gridSize) {
+            for (let y = 0; y < canvas.height + gridSize; y += gridSize) {
+                const offsetX = Math.sin(time + x * 0.002) * 3;
+                const offsetY = Math.cos(time * 0.8 + y * 0.002) * 3;
+                const alpha = 0.15 + Math.sin(time + x * 0.01 + y * 0.01) * 0.08;
+                ctx.beginPath();
+                ctx.arc(x + offsetX, y + offsetY, dotRadius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, alpha)})`;
+                ctx.fill();
+            }
+        }
+        animationId = requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    draw();
+}
+
+// Section 标题进入视口时发光
+function initSectionTitleGlow() {
+    const titles = document.querySelectorAll('.section-title');
+    const glowObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            entry.target.classList.toggle('glow', entry.isIntersecting);
+        });
+    }, { threshold: 0.5 });
+
+    titles.forEach(t => glowObserver.observe(t));
+}
+
+// 3D 倾斜卡片效果（事件委托，一次绑定，适配语言切换后的新 DOM）
+function initTilt3D() {
+    document.addEventListener('mousemove', (e) => {
+        const card = e.target.closest('.gallery-item');
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(5px)`;
+    });
+    document.addEventListener('mouseout', (e) => {
+        const card = e.target.closest('.gallery-item');
+        if (card && !card.contains(e.relatedTarget)) {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+        }
+    });
 }

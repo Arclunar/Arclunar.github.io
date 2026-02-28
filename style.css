@@ -22,6 +22,30 @@ body {
     cursor: default;
 }
 
+/* 滚动进度条 */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--text-muted), var(--accent));
+    z-index: 10000;
+    transform-origin: left;
+    transition: transform 0.1s ease-out;
+}
+
+/* 网格粒子背景 */
+.grid-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 /* 滚动切换背景图层 */
 .bg-layer {
     position: fixed;
@@ -90,6 +114,22 @@ body {
     letter-spacing: 1px;
     text-transform: uppercase;
     transition: color 0.4s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .nav-links a:hover {
@@ -198,6 +238,17 @@ body {
     letter-spacing: 0.02em;
     margin-bottom: 2rem;
     line-height: 1.1;
+    background: linear-gradient(135deg, #f5f5f5 0%, #c0c0c0 40%, #e8e8e8 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-shimmer 10s ease-in-out infinite;
+}
+
+@keyframes title-shimmer {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 100% center; }
 }
 
 .subtitle {
@@ -228,6 +279,12 @@ body {
     margin-bottom: 4rem;
     border-bottom: 1px solid #1a1a1a;
     padding-bottom: 1.5rem;
+    transition: text-shadow 0.6s ease, color 0.6s ease;
+}
+
+.section-title.glow {
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
 }
 
 .text-block p {
@@ -248,6 +305,10 @@ body {
 
 .gallery-item {
     cursor: pointer;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .image-placeholder {
@@ -260,12 +321,15 @@ body {
     color: #333;
     font-family: var(--font-serif);
     margin-bottom: 1.5rem;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.6s ease;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                background-color 0.6s ease,
+                box-shadow 0.5s ease;
 }
 
 .gallery-item:hover .image-placeholder {
     transform: scale(0.97);
     background-color: #1a1a1a;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
 .project-name {
@@ -308,11 +372,16 @@ body {
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 4px;
-    transition: transform 0.3s ease;
+    transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                box-shadow 0.4s ease,
+                border-color 0.4s ease;
 }
 .skill-item:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.02);
     background: rgba(255,255,255,0.04);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 .skill-title {
     font-family: var(--font-serif);
@@ -454,12 +523,15 @@ footer {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 4px;
-    transition: transform 0.3s ease, background 0.3s ease;
+    transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.3s ease,
+                background 0.3s ease;
 }
 
 .blog-card:hover {
-    transform: translateX(8px);
-    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(12px) translateY(-2px);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .blog-card-header {
@@ -512,6 +584,16 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* 交错动画延迟（仅对 .fade-up 生效，保证依次淡入） */
+.fade-up.stagger-1 { transition-delay: 0.08s; }
+.fade-up.stagger-2 { transition-delay: 0.16s; }
+.fade-up.stagger-3 { transition-delay: 0.24s; }
+.fade-up.stagger-4 { transition-delay: 0.32s; }
+.fade-up.stagger-5 { transition-delay: 0.4s; }
+.fade-up.stagger-6 { transition-delay: 0.48s; }
+.fade-up.stagger-7 { transition-delay: 0.56s; }
+.fade-up.stagger-8 { transition-delay: 0.64s; }
 
 /* 鼠标跟随特效（宽屏设备显示） */
 .cursor {
