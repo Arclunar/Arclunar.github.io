@@ -75,6 +75,20 @@ body {
     opacity: 1;
 }
 
+/* Mac 浏览器 z-index 修正：Mac 上负 z-index 的 fixed 元素会被 body 背景遮挡 */
+.is-mac .grid-canvas {
+    z-index: 0;
+}
+.is-mac .bg-layer {
+    z-index: 1;
+}
+.is-mac main,
+.is-mac .post-container,
+.is-mac footer {
+    position: relative;
+    z-index: 2;
+}
+
 ::selection {
     background: var(--text-main);
     color: var(--bg-color);
