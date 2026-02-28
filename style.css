@@ -1,0 +1,335 @@
+:root {
+    --bg-color: #080808;      /* 极深的背景色，比纯黑更有质感 */
+    --text-main: #f0f0f0;     /* 主色文字（偏白） */
+    --text-muted: #666666;    /* 次级文字（灰度） */
+    --accent: #ffffff;        /* 强调色 */
+    --font-sans: 'Inter', -apple-system, sans-serif;
+    --font-serif: 'Noto Serif SC', serif; /* 衬线体用于主标题和高光文字 */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: default; /* 自定义光标时可以按需将其隐藏为 none */
+}
+
+::selection {
+    background: var(--text-main);
+    color: var(--bg-color);
+}
+
+/* 导航栏 */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 2.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    mix-blend-mode: difference; /* 使导航栏在白色背景图片上也能反色显示 */
+}
+
+.logo {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+}
+
+.nav-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.4s ease;
+}
+
+.nav-links a:hover {
+    color: var(--text-muted);
+}
+
+/* 布局区块 */
+.content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.fullscreen-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.section {
+    padding: 8rem 0;
+}
+
+/* 文字与排版 */
+.title {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+    line-height: 1.1;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-family: var(--font-serif);
+    font-weight: 300;
+}
+
+.subtitle span {
+    color: var(--accent);
+}
+
+.description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 500px;
+    line-height: 1.8;
+}
+
+.section-title {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-muted);
+    margin-bottom: 4rem;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 1.5rem;
+}
+
+.text-block p {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-family: var(--font-serif);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    line-height: 1.4;
+}
+
+/* 作品集图片网格 */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 4rem;
+}
+
+.gallery-item {
+    cursor: pointer;
+}
+
+.image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-family: var(--font-serif);
+    margin-bottom: 1.5rem;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.6s ease;
+}
+
+.gallery-item:hover .image-placeholder {
+    transform: scale(0.97);
+    background-color: #1a1a1a;
+}
+
+.project-name {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+/* 项目与教育排版 */
+.education-item {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #1a1a1a;
+}
+.edu-degree {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    color: var(--accent);
+}
+.edu-time {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+.edu-desc {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* 技能网格 */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+}
+.skill-item {
+    padding: 2rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+}
+.skill-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.04);
+}
+.skill-title {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.skill-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+/* 经历与论文 */
+.work-item {
+    margin-bottom: 4rem;
+}
+.work-title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: var(--text-main);
+}
+.work-meta {
+    font-size: 0.9rem;
+    color: var(--accent);
+    margin: 0.8rem 0 1.5rem 0;
+}
+.work-desc {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    max-width: 800px;
+}
+
+.pub-list {
+    list-style: none;
+    margin-top: -1rem;
+}
+.pub-list li {
+    padding: 1.5rem 0;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid #1a1a1a;
+    line-height: 1.6;
+}
+.pub-list li strong {
+    color: var(--text-main);
+    font-weight: 400;
+}
+.pub-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.1);
+    color: var(--accent);
+    border-radius: 2px;
+    margin-right: 0.8rem;
+    vertical-align: middle;
+}
+
+/* 图片适配 */
+.image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background-color: #121212;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    position: relative;
+}
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: grayscale(80%) contrast(1.1);
+}
+.gallery-item:hover .image-placeholder img {
+    transform: scale(1.05);
+    filter: grayscale(0%) contrast(1);
+}
+
+.project-name {
+footer {
+    text-align: center;
+    padding: 4rem;
+    color: #444;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+}
+
+/* 动画特效 */
+.fade-up {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 鼠标跟随特效（宽屏设备显示） */
+.cursor {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: difference;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .cursor {
+        display: block;
+    }
+}
